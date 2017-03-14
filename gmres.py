@@ -21,6 +21,7 @@ b = matrix([
     [ 1 ]
 ])
 
+# Todo: randomize this
 x0 = matrix([
     [ 1 ],
     [ 1 ],
@@ -31,7 +32,13 @@ x0 = matrix([
     [ 1 ]
 ])
 
-
+# Todo:
+# - setup tests
+# - randomize initial vector x0
+# - modularize / refactor code
+# - implement restart (find matrix that needs lots of work)
+# - take a look at cvr format
+# - work in cvr format
 
 def next_iteration(P, B, x, r, m):
     print "iteration: " + str(m)
@@ -96,60 +103,3 @@ print isclose(x, x_cheat)
 
 print x_cheat.T
 print x.T
-
-# # Iteration m = 3
-# beta1 = float(p1.T * r1)
-# p2_squiggly = r1 - beta1 * p1
-# p2 = 1 / norm(p2_squiggly) * p2_squiggly
-# b2 = A * p2
-#
-# B = concatenate((b1, b2), axis=1)
-#
-# Q, R = qr(B)
-# Q_t = transpose(Q)
-# intermediate = Q_t * r1
-# t1 = float(intermediate[1] / R[1, 1])
-# t0 = float((intermediate[0] - (R[0, 1] * t1)) / R[0, 0])
-# t = matrix([t0, t1]).T
-# P = concatenate((p1, p2), axis=1)
-# #t = dot(inv(R), dot(Q_t, r1))
-# print "Q:"
-# print Q
-# print "R:"
-# print R
-# print "P:"
-# print P
-# print "t:"
-# print t
-# x2 = x1 + P*t
-# r2 = r1 - B*t
-
-#
-# # Iteration m = 3
-# beta1 = dot(transpose(p1), r2)
-# beta2 = dot(transpose(p2), r2)
-# p3_squiggly = r2 - beta1 * p1 - beta2 * p2
-# p3 = 1 / norm(p3_squiggly) * p3_squiggly
-# b3 = dot(A, p3)
-#
-# B = concatenate((b1, b2, b3), axis=1)
-#
-# Q, R = qr(B)
-# Q_t = transpose(Q)
-# intermediate = dot(Q_t, r2)
-# t2 = intermediate[2] / R[2][2]
-# t1 = (intermediate[1] - R[1][2] * t2) / R[1][1]
-# t0 = (intermediate[0] - R[0][2] * t2 - R[0][1] * t1) / R[0][0]
-# t = array([t0, t1, t2])
-# P = concatenate((p1, p2, p3), axis=1)
-# x3 = x2 + dot(P, t)
-# r3 = r2 - dot(B, t)
-
-#
-# print norm(r0)
-# print norm(r1)
-# print norm(r2)
-
-# print "Ax = b"
-# print "x = "
-# print inv(A) * b
