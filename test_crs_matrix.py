@@ -55,6 +55,7 @@ class TestMatrix:
         file_path = './data/ash958.mtx'
         ash958 = Matrix.from_mm_file(file_path)
         assert ash958.shape() == (958, 292)
+        assert len(ash958) == 1916
 
     def test_tridiagonal_generation(self):
         m = 3

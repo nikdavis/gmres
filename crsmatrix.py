@@ -101,46 +101,51 @@ class Matrix:
         self.n += 1
         return self
 
-
-
-
-
     @staticmethod
     def from_mm_file(filepath):
         m = n = nnz = 0
-        a = ja = []
+        a = []
+        ja = []
         ia = [0]
         file_handle = open(filepath, 'r')
-        parameters = file_handle.readline().split(' ')
+        parameters = file_handle.readline().rstrip().split(' ')
         # Filter initial comments, docs
         while True:
             line = file_handle.readline()
             if line[0] != '%':
                 break
-        print line
         m, n, nnz = [int(s) for s in line.rstrip().split(' ')]
         entries = []
         # make tuples, sort by row, then col
         while True:
+            i = 0
+            j = 0
+            v = 0.0
             line = file_handle.readline().rstrip()
             if not line:
                 break
             if('pattern' in parameters):
-                i, j = [(s) for s in line.split(' ')]
-                v = random() * 1000
+                i, j = [s for s in line.split(' ')]
+                v = 1
             else:
-                i, j, v = [int(s) for s in line.split(' ')]
+                i, j, v = [s for s in line.split(' ')]
+            i = int(i) - 1
+            j = int(j) - 1
+            v = float(v)
             if 'symmetric' in parameters and i != j:
-                entries.append((j, i, float(v)))
-            entries.append((i, j, float(v)))
+                entries.append((j, i, v))
+            entries.append((i, j, v))
         entries.sort()
+        nnz = len(entries) # We have to recalculate as we can't predict
+                           # from the offset how many entries we'll have as
+                           # we populate symmetric entries
 
         #build up CRS format
         idx = 0
         for i in range(0, m):
-            while True:
+            while True and idx < nnz:
                 entry = entries[idx]
-                if entry[0] != (m + 1):
+                if entry[0] != i:
                     ia.append(idx)
                     break
                 a.append(entry[2])
