@@ -25,6 +25,32 @@ class TestMatrix:
         output_matrix = Matrix.from_column_vector(input_vector)
         assert expected_matrix == output_matrix
 
+    def test_push_column(self):
+        m = 3
+        n = 2
+        a = [1, 4, 2, 5, 3, 6]
+        ia = [0, 2, 4, 6]
+        ja = [0, 1, 0, 1, 0, 1]
+        first_vector = numpy.matrix([[1],[2],[3]])
+        second_vector = numpy.matrix([[4],[5],[6]])
+        expected_matrix = Matrix(m, n, a, ia, ja)
+        output_matrix = Matrix.from_column_vector(first_vector)
+        output_matrix.push_column(second_vector)
+        assert expected_matrix == output_matrix
+
+    def test_push_column_with_zeros(self):
+        m = 3
+        n = 2
+        a = [1, 2, 5, 3]
+        ia = [0, 1, 3, 4]
+        ja = [0, 0, 1, 0]
+        first_vector = numpy.matrix([[1],[2],[3]])
+        second_vector = numpy.matrix([[0],[5],[0]])
+        expected_matrix = Matrix(m, n, a, ia, ja)
+        output_matrix = Matrix.from_column_vector(first_vector)
+        output_matrix.push_column(second_vector)
+        assert expected_matrix == output_matrix
+
     def test_from_mm_file(self):
         file_path = './data/ash958.mtx'
         ash958 = Matrix.from_mm_file(file_path)

@@ -70,7 +70,7 @@ class Matrix:
         m = vector.shape[0]
         idx = 0
         for i in range(0, m):
-            val = float(vector[i])
+            val = float(vector[i, 0])
             if numpy.isclose(val, 0):
                 ia.append(idx)
                 continue
@@ -82,8 +82,28 @@ class Matrix:
 
     # Input vector is a numpy matrix of
     # shape m x 1.
-    def add_column(self, vector):
-        print "Not implemented yet."
+    def push_column(self, vector):
+        a = self.a
+        ia = self.ia
+        ja = self.ja
+        m_vector, n_vector = vector.shape
+        # raise if m_vector != self.m and n_vector == 1
+        added = 0
+        for i in range(0, self.m):
+            val = float(vector[i, 0])
+            if numpy.isclose(val, 0):
+                ia[i+1] += added
+                continue
+            a.insert(ia[i+1]+added, val)
+            ja.insert(ia[i+1]+added, self.n)
+            added += 1
+            ia[i+1] += added
+        self.n += 1
+        return self
+
+
+
+
 
     @staticmethod
     def from_mm_file(filepath):
