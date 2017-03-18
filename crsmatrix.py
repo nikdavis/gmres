@@ -1,4 +1,5 @@
 import numpy
+from random import random
 
 class Matrix:
     # m x n matrix -- row major, 0 index
@@ -55,8 +56,49 @@ class Matrix:
         print "who the f knows"
 
     @staticmethod
-    def from_mm_file():
-        print "who the f knows"
+    def from_mm_file(filepath):
+        m = n = nnz = 0
+        a = ja = []
+        ia = [0]
+        file_handle = open(filepath, 'r')
+        parameters = file_handle.readline().split(' ')
+        # Filter initial comments, docs
+        while True:
+            line = file_handle.readline()
+            if line[0] != '%':
+                break
+        print line
+        m, n, nnz = [int(s) for s in line.rstrip().split(' ')]
+        entries = []
+        # make tuples, sort by row, then col
+        while True:
+            line = file_handle.readline().rstrip()
+            if not line:
+                break
+            if('pattern' in parameters):
+                i, j = [int(s) for s in line.split(' ')]
+                v = random() * 1000
+            else:
+                i, j, v = [int(s) for s in line.split(' ')]
+            if 'symmetric' in parameters and i != j:
+                entries.append((j, i, v))
+            entries.append((i, j, v))
+        entries.sort()
+
+        #build up CRS format
+        idx = 0
+        for i in range(0, m):
+            while True:
+                entry = entries[idx]
+                if entry[0] != (m + 1):
+                    ia.append(idx)
+                    break
+                a.append(entry[2])
+                ja.append(entry[1])
+                idx += 1
+        ia.append(nnz)
+        return Matrix(m, n, a, ia, ja)
+
 
     # Vector should come in as numpy matrix
     # e.g. mat * vect

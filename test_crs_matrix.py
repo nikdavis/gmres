@@ -14,6 +14,11 @@ class TestMatrix:
         output_matrix = initial_matrix.transpose()
         assert expected_matrix == output_matrix
 
+    def test_from_mm_file(self):
+        file_path = './data/ash958.mtx'
+        ash958 = Matrix.from_mm_file(file_path)
+        assert ash958.shape() == (958, 292)
+
     def test_tridiagonal_generation(self):
         m = 3
         a = Matrix.tridiagonal(m)
