@@ -25,24 +25,30 @@ class Matrix:
     def shape(self):
         return (self.m, self.n)
 
-    # def transpose(self):
-    #     m = self.n
-    #     n = self.m
-    #     a = []
-    #     ia = []
-    #     ja = []
-    #     # lets build up a row
-    #     for l in range(0, m):
-    #         row_start = ia[m]
-    #         row_end   = ia[m+1]
-    #         if row_start == row_end:
-    #             continue # no data in this row
-    #         for k in range(row_start, row_end):     # not actually traversing
-    #
-    #     go by row
-    #     check column of self accumulate row
-    #         then adjust ia
-    #         then set jas too on each (== to old row)
+    def transpose(self):
+        m = self.n
+        n = self.m
+        a = []
+        ia = [0]
+        ja = []
+        count = 0
+        # seems this could be improved. currently ~ m*n operations
+        # seems like it could be done in nnz operations
+        for k in range(0, n):
+            for l in range(0, m):
+                row_start = self.ia[l]
+                row_end   = self.ia[l+1]
+                ja_sub = self.ja[row_start:row_end]
+                # are their values in row? and is this column one of them?
+                if row_start == row_end or k not in ja_sub:
+                    continue
+                a_sub = self.a[row_start:row_end]
+                val_idx = ja_sub.index(k)
+                a.append(a_sub[val_idx])
+                ja.append(l)
+                count += 1
+            ia.append(count)
+        return Matrix(m, n, a, ia, ja)
 
     # e.g. self * some_other
     def mult_left(self, other):

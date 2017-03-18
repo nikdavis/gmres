@@ -3,16 +3,16 @@ import numpy
 
 class TestMatrix:
 
-    # def test_transpose(self):
-    #     m = n = 3
-    #     a = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    #     ia = [0, 3, 6, 9]
-    #     ja = [0, 1, 2, 0, 1, 2, 0, 1, 2]
-    #     initial_matrix = Matrix(m, n, a, ia, ja)
-    #     a_trans = [1, 4, 7, 2, 5, 8, 3, 6, 9]
-    #     expected_matrix = Matrix(m, n, a_trans, ia, ja)
-    #     output_matrix = initial_matrix.transpose()
-    #     assert input_matrix == output_matrix
+    def test_transpose(self):
+        m = n = 3
+        a = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        ia = [0, 3, 6, 9]
+        ja = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+        initial_matrix = Matrix(m, n, a, ia, ja)
+        a_trans = [1, 4, 7, 2, 5, 8, 3, 6, 9]
+        expected_matrix = Matrix(m, n, a_trans, ia, ja)
+        output_matrix = initial_matrix.transpose()
+        assert expected_matrix == output_matrix
 
     def test_tridiagonal_generation(self):
         m = 3
