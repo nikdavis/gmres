@@ -53,7 +53,14 @@ class Matrix:
 
     # e.g. self * some_other
     def mult_left(self, other):
-        print "who the f knows"
+        print "Not implemented yet."
+
+    @staticmethod
+    def from_column_vector(vector):
+        print "Not implemented yet."
+
+    def add_column(self, vector):
+        print "Not implemented yet."
 
     @staticmethod
     def from_mm_file(filepath):
@@ -99,6 +106,8 @@ class Matrix:
         ia.append(nnz)
         return Matrix(m, n, a, ia, ja)
 
+    def to_mm_file(self, filepath):
+        print "Not implemented yet."
 
     # Vector should come in as numpy matrix
     # e.g. mat * vect
