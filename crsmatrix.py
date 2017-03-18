@@ -188,7 +188,6 @@ class Matrix:
         ia_sum = 2
         ja_ptr = 0  # what column are we inserting on?
         for i in range(1, size-1):
-            print i
             ia_sum += 3
             ia.append(ia_sum)
             ja.append(ja_ptr)

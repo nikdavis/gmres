@@ -17,8 +17,8 @@ class Gmres:
 
     def solve(self):
         A = self.A
-        print A.shape()
-        print len(A)
+        # print A.shape()
+        # print len(A)
         b = self.b
         x0 = self.x0
         #print x0.shape
