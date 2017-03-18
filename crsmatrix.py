@@ -3,6 +3,11 @@ from random import random
 
 class Matrix:
     # m x n matrix -- row major, 0 index
+    # m(int)
+    # n(int)
+    # a(list<float>)
+    # ia(list<int>)
+    # ja(list<int>)
     def __init__(self, m, n, a, ia, ja):
         self.m = m
         self.n = n
@@ -55,10 +60,28 @@ class Matrix:
     def mult_left(self, other):
         print "Not implemented yet."
 
+    # Input vector is a numpy matrix of
+    # shape m x 1.
     @staticmethod
     def from_column_vector(vector):
-        print "Not implemented yet."
+        a = []
+        ia = [0]
+        ja = []
+        m = vector.shape[0]
+        idx = 0
+        for i in range(0, m):
+            val = float(vector[i])
+            if numpy.isclose(val, 0):
+                ia.append(idx)
+                continue
+            a.append(val)
+            idx += 1
+            ia.append(idx)
+            ja.append(0)
+        return Matrix(m, 1, a, ia, ja)
 
+    # Input vector is a numpy matrix of
+    # shape m x 1.
     def add_column(self, vector):
         print "Not implemented yet."
 
@@ -83,13 +106,13 @@ class Matrix:
             if not line:
                 break
             if('pattern' in parameters):
-                i, j = [int(s) for s in line.split(' ')]
+                i, j = [(s) for s in line.split(' ')]
                 v = random() * 1000
             else:
                 i, j, v = [int(s) for s in line.split(' ')]
             if 'symmetric' in parameters and i != j:
-                entries.append((j, i, v))
-            entries.append((i, j, v))
+                entries.append((j, i, float(v)))
+            entries.append((i, j, float(v)))
         entries.sort()
 
         #build up CRS format

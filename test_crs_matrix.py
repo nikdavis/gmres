@@ -14,6 +14,17 @@ class TestMatrix:
         output_matrix = initial_matrix.transpose()
         assert expected_matrix == output_matrix
 
+    def test_from_column_vector(self):
+        m = 3
+        n = 1
+        a = [1, 2, 3]
+        ia = [0, 1, 2, 3]
+        ja = [0, 0, 0]
+        input_vector = numpy.matrix([[1],[2],[3]])
+        expected_matrix = Matrix(m, n, a, ia, ja)
+        output_matrix = Matrix.from_column_vector(input_vector)
+        assert expected_matrix == output_matrix
+
     def test_from_mm_file(self):
         file_path = './data/ash958.mtx'
         ash958 = Matrix.from_mm_file(file_path)
