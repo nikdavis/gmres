@@ -1,7 +1,6 @@
 import numpy
 
 class Matrix:
-
     # m x n matrix -- row major, 0 index
     def __init__(self, m, n, a, ia, ja):
         self.m = m
@@ -14,15 +13,48 @@ class Matrix:
     def __len__(self):
         return len(self.a)
 
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.m == other.m and \
+            self.n == other.n and self.a == other.a and self.ia == other.ia and \
+            self.ja == other.ja
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+
     def shape(self):
         return (self.m, self.n)
 
-    def transpose(self):
+    # def transpose(self):
+    #     m = self.n
+    #     n = self.m
+    #     a = []
+    #     ia = []
+    #     ja = []
+    #     # lets build up a row
+    #     for l in range(0, m):
+    #         row_start = ia[m]
+    #         row_end   = ia[m+1]
+    #         if row_start == row_end:
+    #             continue # no data in this row
+    #         for k in range(row_start, row_end):     # not actually traversing
+    #
+    #     go by row
+    #     check column of self accumulate row
+    #         then adjust ia
+    #         then set jas too on each (== to old row)
+
+    # e.g. self * some_other
+    def mult_left(self, other):
+        print "who the f knows"
+
+    @staticmethod
+    def from_mm_file():
         print "who the f knows"
 
     # Vector should come in as numpy matrix
     # e.g. mat * vect
-    def mult_vect_right(self, v):
+    def mult_left_vector(self, v):
         # a  -> nnz
         # ia -> m + 1
         # ja -> nnz
