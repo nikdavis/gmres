@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/runpy.py", line 174, in _run_module_as_main
+    "__main__", fname, loader, pkg_name)
+  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/runpy.py", line 72, in _run_code
+    exec code in run_globals
+  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/cProfile.py", line 199, in <module>
+    main()
+  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/cProfile.py", line 192, in main
+    runctx(code, globs, None, options.outfile, options.sort)
+  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/cProfile.py", line 49, in runctx
+    prof = prof.runctx(statement, globals, locals)
+  File "/usr/local/Cellar/python/2.7.12_2/Frameworks/Python.framework/Versions/2.7/lib/python2.7/cProfile.py", line 140, in runctx
+    exec cmd in globals, locals
+  File "gmres_example.py", line 8, in <module>
+    output_vector, error = gmres.solve()
+  File "gmrescrs.py", line 36, in solve
+    P, B, x, r = self.next_iteration(P, B, x, r, iteration)
+  File "gmrescrs.py", line 74, in next_iteration
+    b = A.mult_left_vector(p_norm)
+  File "crsmatrix.py", line 172, in mult_left_vector
+    summation += v.item((col, 0)) * val
+KeyboardInterrupt
+       47.06 real        46.10 user         4.26 sys
