@@ -27,7 +27,7 @@ class Gmres:
         iteration = 1
 
         #start iterating
-        while error > self.epsilon and self.total_iterations <= self.max_iterations and \
+        while error > self.epsilon and self.total_iterations < self.max_iterations and \
             iteration <= self.n and iteration <= self.restart_after:
 
             if(iteration == 1):
@@ -36,7 +36,7 @@ class Gmres:
                 P, B, x, r = self.next_iteration(P, B, x, r, iteration)
 
             error = norm(r)
-            print "Iteration " + str(iteration)
+            print "Iteration " + str(self.total_iterations + 1)
             print "error: " + str(error)
 
             if(iteration == self.restart_after):
