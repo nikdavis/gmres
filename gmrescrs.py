@@ -2,8 +2,8 @@ from numpy import zeros, ones, concatenate
 from numpy.linalg import norm, qr
 
 class Gmres:
-    MAX_ITERATIONS = 100
-    RESTART_AFTER = 10
+    MAX_ITERATIONS = 10000
+    RESTART_AFTER = 50
     EPSILON = 1e-6
 
     # A(crsmatrix.Matrix) m x n
