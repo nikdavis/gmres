@@ -169,7 +169,7 @@ class Matrix:
             for l in range(self.ia[row], self.ia[row + 1]):  # j is used to fetch item and determine col
                 col = self.ja[l]
                 val = self.a[l]
-                summation += float(v[col, 0]) * val
+                summation += v.item((col, 0)) * val
             vals.append(summation)
         return numpy.matrix(vals).T
 
