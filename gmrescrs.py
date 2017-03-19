@@ -3,7 +3,7 @@ from numpy.linalg import norm, qr
 
 class Gmres:
     ITERATIONS = 10000
-    RESTART_AFTER = 15
+    RESTART_AFTER = 100
     EPSILON = 1e-6
 
     # A(crsmatrix.Matrix) m x n
@@ -13,29 +13,42 @@ class Gmres:
         self.b = b  # Numpy matrix
         self.m, self.n = A.shape()
         self.x0 = ones((self.n, 1))
-        self.iteration = 1
+        self.total_iterations = 0
 
     def solve(self):
         A = self.A
-        # print A.shape()
-        # print len(A)
         b = self.b
-        x0 = self.x0
-        #print x0.shape
-        # Iteration m = 1
-        b0 = A.mult_left_vector(x0)
-        #print b0.shape
-        r0 = b - b0
+        x = self.x0
+        error = 1
 
-        #(900,200) * (200, 1) -> (900, 1)
+        #start iterating
+        while error > self.EPSILON and self.iteration <= self.ITERATIONS and \
+            self.iteration <= self.n and self.iteration <= self.RESTART_AFTER:
+
+            if(self.iteration == 1):
+                P, B, x, r = self.first_iteration(A, b, x)
+            else:
+                P, B, x, r = self.next_iteration(P, B, x, r, self.iteration)
+
+            error = norm(r)
+            print "Iteration " + str(self.iteration)
+            print "error: " + str(error)
+
+            if(self.iteration == self.RESTART_AFTER):
+                self.iteration = 1
+                print "Restarting!"
+            else:
+                self.iteration += 1
+            self.total_iterations += 1
+
+        return x, error # and stuff
+
+    def first_iteration(self, A, b, x0):
+        b0 = A.mult_left_vector(x0)
+        r0 = b - b0
         r0_norm = error = norm(r0)
-        if error < self.EPSILON:
-            return x0
         p1 = 1/r0_norm * r0
-        #print p1
         b1 = A.mult_left_vector(p1)
-        #print A.shape()
-        #print b1
         t = float((b1.T * r0) / (b1.T * b1))
         x1 = x0 + t * p1
         r1 = r0 - t * b1 # b - A * x1
@@ -43,16 +56,7 @@ class Gmres:
         B = b1
         x = x1
         r = r1
-        #start iterating
-        self.iteration += 1
-        while error > self.EPSILON and self.iteration <= self.ITERATIONS and \
-            self.iteration <= self.n:
-            P, B, x, r = self.next_iteration(P, B, x, r, self.iteration)
-            error = norm(r)
-            #print error
-            self.iteration += 1
-
-        return x, error # and stuff
+        return P, B, x, r
 
     def next_iteration(self, P, B, x, r, m):
         A = self.A
