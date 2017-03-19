@@ -2,8 +2,8 @@ from numpy import zeros, ones, concatenate
 from numpy.linalg import norm, qr
 
 class Gmres:
-    ITERATIONS = 10000
-    RESTART_AFTER = 100
+    ITERATIONS = 50
+    RESTART_AFTER = 10
     EPSILON = 1e-6
 
     # A(crsmatrix.Matrix) m x n
@@ -20,25 +20,26 @@ class Gmres:
         b = self.b
         x = self.x0
         error = 1
+        iteration = 1
 
         #start iterating
-        while error > self.EPSILON and self.iteration <= self.ITERATIONS and \
-            self.iteration <= self.n and self.iteration <= self.RESTART_AFTER:
+        while error > self.EPSILON and self.total_iterations <= self.ITERATIONS and \
+            iteration <= self.n and iteration <= self.RESTART_AFTER:
 
-            if(self.iteration == 1):
+            if(iteration == 1):
                 P, B, x, r = self.first_iteration(A, b, x)
             else:
-                P, B, x, r = self.next_iteration(P, B, x, r, self.iteration)
+                P, B, x, r = self.next_iteration(P, B, x, r, iteration)
 
             error = norm(r)
-            print "Iteration " + str(self.iteration)
+            print "Iteration " + str(iteration)
             print "error: " + str(error)
 
-            if(self.iteration == self.RESTART_AFTER):
-                self.iteration = 1
+            if(iteration == self.RESTART_AFTER):
+                iteration = 1
                 print "Restarting!"
             else:
-                self.iteration += 1
+                iteration += 1
             self.total_iterations += 1
 
         return x, error # and stuff
