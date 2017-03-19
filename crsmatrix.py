@@ -173,7 +173,6 @@ class Matrix:
             vals.append(summation)
         return numpy.matrix(vals).T
 
-
     @staticmethod
     # Generate a useful, invertable tridiagonal matrix like:
     #   [ [  2, -1,  0 ],

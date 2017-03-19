@@ -2,18 +2,22 @@ from numpy import zeros, ones, concatenate
 from numpy.linalg import norm, qr
 
 class Gmres:
-    ITERATIONS = 50
+    MAX_ITERATIONS = 100
     RESTART_AFTER = 10
     EPSILON = 1e-6
 
     # A(crsmatrix.Matrix) m x n
     # b(numpy.matrix) n x 1
-    def __init__(self, A, b):
+    def __init__(self, A, b, max_iterations = MAX_ITERATIONS, \
+                    epsilon = EPSILON, restart_after = RESTART_AFTER):
         self.A = A  # CRS
         self.b = b  # Numpy matrix
         self.m, self.n = A.shape()
         self.x0 = ones((self.n, 1))
         self.total_iterations = 0
+        self.max_iterations = max_iterations
+        self.epsilon = epsilon
+        self.restart_after = restart_after
 
     def solve(self):
         A = self.A
@@ -23,8 +27,8 @@ class Gmres:
         iteration = 1
 
         #start iterating
-        while error > self.EPSILON and self.total_iterations <= self.ITERATIONS and \
-            iteration <= self.n and iteration <= self.RESTART_AFTER:
+        while error > self.epsilon and self.total_iterations <= self.max_iterations and \
+            iteration <= self.n and iteration <= self.restart_after:
 
             if(iteration == 1):
                 P, B, x, r = self.first_iteration(A, b, x)
@@ -35,7 +39,7 @@ class Gmres:
             print "Iteration " + str(iteration)
             print "error: " + str(error)
 
-            if(iteration == self.RESTART_AFTER):
+            if(iteration == self.restart_after):
                 iteration = 1
                 print "Restarting!"
             else:
