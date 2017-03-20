@@ -2,8 +2,14 @@ from gmrescrs import Gmres
 from crsmatrix import Matrix
 import numpy
 
-# class TestGmresCrs:
+class TestGmresCrs:
 
+    def test_gmres_tridiagonal(self):
+        A = Matrix.tridiagonal(20)
+        b = numpy.ones((A.shape()[0], 1))
+        gmres = Gmres(A, b)
+        output_vector, error, metadata = gmres.solve()
+        assert error < Gmres.EPSILON
     # def test_gmres_huge(self):
     #     A = Matrix.from_mm_file('data/bcsstk18.mtx')
     #     b = numpy.ones((A.shape()[0], 1))

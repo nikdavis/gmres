@@ -4,32 +4,29 @@ from mpl_toolkits.mplot3d import Axes3D
 from random import random
 import csv
 
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-
-x = []
-y = []
-z = []
+mmax = []
+iterations = []
+duration = []
 headers = []
 row_num = 0
-with open('generated_data.csv', 'r') as csvfile:
+matrix_size = 150
+with open('report/iterations.csv', 'r') as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
         if row_num == 0:
             headers = row
             row_num += 1
             continue
-        x.append(float(row[0]))
-        y.append(float(row[1]))
-        z.append(float(row[3]))
+        mmax.append(float(row[1]))
+        iterations.append(float(row[2]))
+        duration.append(float(row[3]))
         row_num += 1
 
-ax.text2D(0.01, 0.99, "GMRES Performance, Duration", transform=ax.transAxes)
-ax.scatter(x, y, z, label='GMRES', cmap='hot')
-ax.set_xlabel('Matrix Row, Column Size')
-ax.set_ylabel('Iteration / Matrix Size')
-ax.set_zlabel('Duration')
-
+fig, ax = plt.subplots()
+ax.scatter(mmax, iterations)
+ax.set_title('Mmax vs Iterations to convergence')
+ax.set_xlabel('Mmax')
+ax.set_ylabel('Iterations')
 plt.show()
 
 # import matplotlib as mpl

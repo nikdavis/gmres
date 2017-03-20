@@ -8,6 +8,7 @@ class Matrix:
     # a(list<float>)
     # ia(list<int>)
     # ja(list<int>)
+    # items are stored sorted by row then column
     def __init__(self, m, n, a, ia, ja):
         self.m = m
         self.n = n
@@ -35,7 +36,46 @@ class Matrix:
     def shape(self):
         return (self.m, self.n)
 
+    def symmetric(self):
+        m = self.m
+        n = self.n
+        a = self.a
+        ia = self.ia
+        ja = self.ja
+        if m != n:
+            return False
+        for k in range(0, m):
+            row_start = ia[k]
+            row_end = ia[k+1]
+            length = row_end - row_start
+            if row_end == row_start:
+                continue
+            row = a[row_start:row_end]
+            cols = ja[row_start:row_end]
+            for i in range(0, length):
+                col = cols[i]
+                if col >= k:    # don't go past diagonal
+                    break
+                val = row[i]
+                other_row_start = ia[col]
+                other_row_end = ia[col+1]
+                print other_row_end - other_row_start
+                if other_row_start == other_row_end:
+                    return False
+                other_cols = ja[other_row_start:other_row_end]
+                print other_cols
+                if k not in other_cols:
+                    return False
+                other_vals = a[other_row_start:other_row_end]
+                other_val = other_vals[other_cols.index(k)]
+                if not numpy.isclose(val, other_val):
+                    return False
+        return True
+
+
     def transpose(self):
+        if self.symmetric():
+            return self
         m = self.n
         n = self.m
         a = []

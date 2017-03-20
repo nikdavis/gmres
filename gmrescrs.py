@@ -41,8 +41,11 @@ class Gmres:
 
             error = norm(r)
             end = datetime.now()
-            duration = float((end - start).microseconds) / 1e6
-            durations.append(duration)
+
+            timedelta = end - start
+            duration_seconds = float(timedelta.seconds)
+            duration_decimal = float(timedelta.microseconds) / 1e6
+            durations.append(duration_seconds + duration_decimal)
             errors.append(error)
             if(self.total_iterations > 0):
                 idx = self.total_iterations
@@ -50,12 +53,12 @@ class Gmres:
                 error_delta = (errors[idx-1] - errors[idx]) / errors[idx-1]
                 error_deltas.append(error_delta)
 
-            print "Iteration " + str(self.total_iterations + 1)
-            print "error: " + str(error)
+            # print "Iteration " + str(self.total_iterations + 1)
+            # print "error: " + str(error)
 
             if(iteration == self.restart_after):
                 iteration = 1
-                print "Restarting!"
+                # print "Restarting!"
             else:
                 iteration += 1
             self.total_iterations += 1

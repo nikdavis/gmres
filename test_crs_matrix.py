@@ -3,6 +3,22 @@ import numpy
 
 class TestMatrix:
 
+    def test_symmetric(self):
+        A = Matrix.tridiagonal(3)
+        print A.a
+        print A.ia
+        print A.ja
+        assert A.symmetric() == True
+
+        a = [1, 2, 1, 1]
+        ia = [0, 2, 3, 4]
+        ja = [0, 1, 0, 0]
+        A = Matrix(3, 3, a, ia, ja)
+        assert A.symmetric() == False
+
+        A = Matrix.from_mm_file('data/ash958.mtx')
+        assert A.symmetric() == False
+
     def test_left_mult(self):
         A = Matrix.tridiagonal(3)
         a_inv = [0.75, 0.5, 0.25, 0.5 , 1., 0.5, 0.25, 0.5, 0.75]

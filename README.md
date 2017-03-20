@@ -1,7 +1,7 @@
 Todo:
  - [x] Add Mat * Mat
- - [ ] Check for symmetry
- - [ ] Writeup
+ - [x] Check for symmetry
+ - [x] Writeup
  - [x] More profiling
    - use tridiagonal
    - sweep matrix size
@@ -10,3 +10,9 @@ Todo:
      - mat size
      - iteration
      - norm_error_improvement / iteration_duration
+
+Things to show:
+  - [ ] Written file
+  - [ ] Test overview, run them
+  - [ ] gmres lib
+  - [ ] crsmatrix lib
