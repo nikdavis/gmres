@@ -1,7 +1,8 @@
 Todo:
  - [x] Add Mat * Mat
+ - [ ] Check for symmetry
  - [ ] Writeup
- - [ ] More profiling
+ - [x] More profiling
    - use tridiagonal
    - sweep matrix size
    - sweep iteration

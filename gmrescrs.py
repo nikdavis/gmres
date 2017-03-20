@@ -1,5 +1,6 @@
 from numpy import zeros, ones, concatenate
 from numpy.linalg import norm, qr
+from datetime import datetime
 
 class Gmres:
     MAX_ITERATIONS = 10000
@@ -25,17 +26,30 @@ class Gmres:
         x = self.x0
         error = 1
         iteration = 1
+        errors = []
+        error_deltas = []
+        durations = []
 
         #start iterating
         while error > self.epsilon and self.total_iterations < self.max_iterations and \
             iteration <= self.n and iteration <= self.restart_after:
-
+            start = datetime.now()
             if(iteration == 1):
                 P, B, x, r = self.first_iteration(A, b, x)
             else:
                 P, B, x, r = self.next_iteration(P, B, x, r, iteration)
 
             error = norm(r)
+            end = datetime.now()
+            duration = float((end - start).microseconds) / 1e6
+            durations.append(duration)
+            errors.append(error)
+            if(self.total_iterations > 0):
+                idx = self.total_iterations
+                # find the delta and norm it to the last error
+                error_delta = (errors[idx-1] - errors[idx]) / errors[idx-1]
+                error_deltas.append(error_delta)
+
             print "Iteration " + str(self.total_iterations + 1)
             print "error: " + str(error)
 
@@ -46,7 +60,7 @@ class Gmres:
                 iteration += 1
             self.total_iterations += 1
 
-        return x, error # and stuff
+        return x, error, [self.total_iterations, error_deltas, durations] # and stuff
 
     def first_iteration(self, A, b, x0):
         b0 = A.mult_left_vector(x0)
