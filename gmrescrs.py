@@ -1,10 +1,10 @@
-from numpy import zeros, ones, concatenate
+from numpy import zeros, ones, concatenate, matrix
 from numpy.linalg import norm, qr
 from datetime import datetime
 
 class Gmres:
     MAX_ITERATIONS = 10000
-    RESTART_AFTER = 50
+    RESTART_AFTER = 500
     EPSILON = 1e-6
 
     # A(crsmatrix.Matrix) m x n
@@ -15,6 +15,8 @@ class Gmres:
         self.b = b  # Numpy matrix
         self.m, self.n = A.shape()
         self.x0 = ones((self.n, 1))
+        self.Q = None
+        self.R = None
         self.total_iterations = 0
         self.max_iterations = max_iterations
         self.epsilon = epsilon
@@ -47,6 +49,10 @@ class Gmres:
             duration_decimal = float(timedelta.microseconds) / 1e6
             durations.append(duration_seconds + duration_decimal)
             errors.append(error)
+
+            print self.total_iterations
+            print error
+
             if(self.total_iterations > 0):
                 idx = self.total_iterations
                 # find the delta and norm it to the last error
@@ -66,6 +72,8 @@ class Gmres:
         return x, error, [self.total_iterations, error_deltas, durations] # and stuff
 
     def first_iteration(self, A, b, x0):
+        self.Q = None
+        self.R = None
         b0 = A.mult_left_vector(x0)
         r0 = b - b0
         r0_norm = error = norm(r0)
@@ -93,21 +101,52 @@ class Gmres:
         B = concatenate((B, b), axis=1)
         # print "B: "
         # print B
-        Q, R = qr(B)
+        # make b orthogonal to all other Bs
+        if self.Q is None:
+            self.Q, self.R = qr(B)
+        else:
+            Q = self.Q
+            R = self.R
+            q_orth = b
+            constants = []
+            for i in range(0, Q.shape[1]):
+                q_sub = Q[:, i]
+                #print q_sub
+                constant = float(q_sub.T * b)
+                constants.append(constant)
+                q_orth = q_orth - constant * q_sub
+            q_norm = norm(q_orth)
+            q_orth = 1 / norm(q_orth) * q_orth
+            # print constants
+            # print q_orth.T * q_sub
+            # print self.Q
+            # print self.R
+            # print q_orth
+            # print matrix(constants).T
+            self.Q = concatenate((self.Q, q_orth), axis=1)
+            self.R = concatenate((self.R, matrix(constants).T), axis=1)
+            Rm = self.R.shape[1]
+            # print zeros((1, Rm))
+            self.R = concatenate((self.R, zeros((1, Rm))))
+            self.R[Rm-1, Rm-1] = q_norm
+            # print self.Q
+            # print self.R
+
+        #self.Q, self.R = qr(B)
         # solve new t by back substitution
         # R * t = Q.T * r
-        intermediate = Q.T * r
+        intermediate = self.Q.T * r
         # print "R: "
         # print R
-        rows, cols = R.shape
+        rows, cols = self.R.shape
         t = zeros((rows, 1))
         for i in range(0, rows):
             row = rows - 1 - i # start from bottom
             col = row
             t_new = intermediate[row, 0]
             for j in range(row + 1, cols):
-                t_new = t_new - R[row, j] * t[j, 0]
-            t[row, 0] = t_new / R[row, col]
+                t_new = t_new - self.R[row, j] * t[j, 0]
+            t[row, 0] = t_new / self.R[row, col]
         # print "t: "
         # print t
         x_next = x + P * t
