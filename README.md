@@ -1,5 +1,5 @@
 Todo:
- - [ ] Add Mat * Mat
+ - [x] Add Mat * Mat
  - [ ] Writeup
  - [ ] More profiling
    - use tridiagonal

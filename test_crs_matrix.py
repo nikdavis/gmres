@@ -3,6 +3,18 @@ import numpy
 
 class TestMatrix:
 
+    def test_left_mult(self):
+        A = Matrix.tridiagonal(3)
+        a_inv = [0.75, 0.5, 0.25, 0.5 , 1., 0.5, 0.25, 0.5, 0.75]
+        ia_inv = [0, 3, 6, 9]
+        ja_inv = [0, 1, 2, 0, 1, 2, 0, 1, 2]
+        a = [1.0, 1.0, 1.0]
+        ia = [0, 1, 2, 3]
+        ja = [0, 1, 2]
+        A_inv = Matrix(3, 3, a_inv, ia_inv, ja_inv)
+        I = Matrix(3, 3, a, ia, ja)
+        assert A * A_inv == I
+
     def test_transpose(self):
         m = n = 3
         a = [1, 2, 3, 4, 5, 6, 7, 8, 9]

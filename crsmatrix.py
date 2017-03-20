@@ -21,11 +21,16 @@ class Matrix:
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.m == other.m and \
-            self.n == other.n and self.a == other.a and self.ia == other.ia and \
+            self.n == other.n and \
+            self.a == other.a and \
+            self.ia == other.ia and \
             self.ja == other.ja
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __mul__(self, other):
+        return self.mult_left(other)
 
     def shape(self):
         return (self.m, self.n)
@@ -57,7 +62,46 @@ class Matrix:
 
     # e.g. self * some_other
     def mult_left(self, other):
-        print "Not implemented yet."
+        # self.n == other.m
+        m = self.m
+        n = other.n
+        a = []
+        ia = [0]
+        ja = []
+        count = 0
+        for k in range(0, m):
+            for l in range(0, n):
+                row_start = self.ia[k]
+                row_end = self.ia[k+1]
+                if row_start == row_end: # will be 0
+                    ia.append(count)
+                    continue
+                vals = self.a[row_start:row_end]
+                cols = self.ja[row_start:row_end]
+                length = row_end - row_start
+                # multiply row * col
+                summation = 0.0
+                for p in range(0, length):
+                    idx = cols[p]
+                    # get row of other
+                    other_row_start = other.ia[idx]
+                    other_row_end = other.ia[idx+1]
+                    other_row_cols = other.ja[other_row_start:other_row_end]
+                    if other_row_start == other_row_end or \
+                        l not in other_row_cols:
+                        continue
+                    other_row = other.a[other_row_start:other_row_end]
+                    other_val_idx = other_row_cols.index(l)
+                    other_val = other_row[other_val_idx]
+                    summation += vals[p] * other_val
+                if(numpy.isclose(summation, 0)):
+                    continue
+                a.append(summation)
+                ja.append(l)
+                count += 1
+            ia.append(count)
+        return Matrix(m, n, a, ia, ja)
+
 
     # Input vector is a numpy matrix of
     # shape m x 1.
@@ -198,7 +242,7 @@ class Matrix:
     #     [  0, -1,  2 ] ]
     # of any size.
     def tridiagonal(size = 10):
-        sequence = [-1, 2, -1]
+        sequence = [-1.0, 2.0, -1.0]
         a = sequence[1:]
         ia = [0, 2]
         ja = [0, 1]
