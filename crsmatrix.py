@@ -27,7 +27,6 @@ class Matrix:
     def __ne__(self, other):
         return not self.__eq__(other)
 
-
     def shape(self):
         return (self.m, self.n)
 
@@ -39,9 +38,9 @@ class Matrix:
         ja = []
         count = 0
         # seems this could be improved. currently ~ m*n operations
-        # seems like it could be done in nnz operations
-        for k in range(0, n):
-            for l in range(0, m):
+        # seems like it could be done in c * nnz operations
+        for k in range(0, self.n):
+            for l in range(0, self.m):
                 row_start = self.ia[l]
                 row_end   = self.ia[l+1]
                 ja_sub = self.ja[row_start:row_end]
@@ -155,17 +154,36 @@ class Matrix:
         return Matrix(m, n, a, ia, ja)
 
     def to_mm_file(self, filepath):
-        print "Not implemented yet."
+        handle = open(filepath, 'w')
+        m, n = self.shape()
+        nnz = len(self)
+        intro = [
+            '%%MatrixMarket matrix coordinate real',
+            '%-------------------------------------------------------------------------------',
+            '% Output from crsmatrix lib, by Nikolas Davis',
+            '%-------------------------------------------------------------------------------'
+        ]
+        handle.write('\n'.join(intro) + '\n')
+        handle.write(' '.join([str(n) for n in [m, n, nnz]]) + '\n')
+        for k in range(0, m):
+            row_start = self.ia[k]
+            row_end = self.ia[k+1]
+            row_len = row_end - row_start
+            row = self.a[row_start:row_end]
+            cols = self.ja[row_start:row_end]
+            for l in range(0, row_len):
+                val = row[l]
+                i = k + 1
+                j = cols[l] + 1
+                handle.write(' '.join([str(n) for n in [i, j, val]]) + '\n')
+        handle.close()
 
     # Vector should come in as numpy matrix
     # e.g. mat * vect
     def mult_left_vector(self, v):
-        # a  -> nnz
-        # ia -> m + 1
-        # ja -> nnz
         vals = []
         for row in range(0, self.m):   # row
-            summation = 0
+            summation = 0.0
             for l in range(self.ia[row], self.ia[row + 1]):  # j is used to fetch item and determine col
                 col = self.ja[l]
                 val = self.a[l]
